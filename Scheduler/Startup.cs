@@ -31,9 +31,14 @@ namespace Scheduler
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<SchedulerContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        {     
+            services.AddDbContext<SchedulerContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+            }));
 
             services.AddIdentity<User, IdentityRole>(
                 config => config.SignIn.RequireConfirmedEmail = true)
@@ -46,6 +51,8 @@ namespace Scheduler
             services.AddScoped(typeof(IRepository<Group>), typeof(GroupRepository));
             services.AddScoped(typeof(IRepository<Room>), typeof(RoomRepository));
             services.AddScoped(typeof(IRepository<Teacher>), typeof(TeacherRepository));
+            services.AddScoped(typeof(IRepository<Schedule>), typeof(ScheduleRepository));
+            services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<ITeacherService, TeacherService>();

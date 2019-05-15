@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scheduler.DataAccess.Models
 {
     public partial class Schedule
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ScheduleId { get; set; }
         public int RoomId { get; set; }
         public int GroupId { get; set; }

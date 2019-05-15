@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Scheduler.DataAccess.Models;
+using System;
 
 namespace Scheduler.DataAccess.Implementation
 {
-    public partial class SchedulerContext : IdentityDbContext
+    public partial class SchedulerContext : DbContext
     {
-        public SchedulerContext()
-        {
-        }
-
         public SchedulerContext(DbContextOptions<SchedulerContext> options)
             : base(options)
         {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
         }
 
         public virtual DbSet<Group> Group { get; set; }
@@ -20,20 +21,5 @@ namespace Scheduler.DataAccess.Implementation
         public virtual DbSet<Schedule> Schedule { get; set; }
         public virtual DbSet<Teacher> Teacher { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Group>()
-                .HasMany(s => s.Schedule)
-                .WithOne(g => g.Group);
-
-            modelBuilder.Entity<Room>()
-                .HasMany(s => s.Schedule)
-                .WithOne(r => r.Room);
-
-            modelBuilder.Entity<Teacher>()
-                .HasMany(s => s.Schedule)
-                .WithOne(t => t.Teacher);
-        }
     }
 }

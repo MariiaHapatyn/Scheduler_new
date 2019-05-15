@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scheduler.DataAccess.Models
 {
     public class Group
     {
-        public Group()
-        {
-            Schedule = new List<Schedule>();
-        }
-
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int GroupId { get; set; }
         public string Name { get; set; }
         public string NumberOfStudents { get; set; }
