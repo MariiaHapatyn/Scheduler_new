@@ -5,7 +5,7 @@ using System;
 
 namespace Scheduler.DataAccess.Implementation
 {
-    public partial class SchedulerContext : DbContext
+    public partial class SchedulerContext : IdentityDbContext
     {
         public SchedulerContext(DbContextOptions<SchedulerContext> options)
             : base(options)

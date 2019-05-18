@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Scheduler.Models;
+using Scheduler1.Models;
 
-namespace Scheduler.Controllers
+namespace Scheduler1.Controllers
 {
     public class HomeController : Controller
     {

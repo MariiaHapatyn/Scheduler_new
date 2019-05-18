@@ -1,11 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Scheduler.Services.Interfaces;
-using Scheduler.DTO.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Scheduler.DataAccess.Implementation;
+using Scheduler.DataAccess.Models;
+using Scheduler.DTO.Models;
+using Scheduler.Services.Interfaces;
 
 namespace Scheduler.Controllers
 {
+    [Authorize]
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;

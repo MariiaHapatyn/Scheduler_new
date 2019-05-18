@@ -1,72 +1,90 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Scheduler.Services.Interfaces;
-using Scheduler.DTO.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Scheduler.DataAccess.Implementation;
+using Scheduler.DataAccess.Models;
+using Scheduler.DTO.Models;
+using Scheduler.Services.Interfaces;
 
 namespace Scheduler.Controllers
 {
-    public class RoomController : Controller
+    [Authorize]
+    public class TeacherController : Controller
     {
-        private readonly IRoomService _roomService;
+        private readonly ITeacherService _teacherService;
 
-        public RoomController(IRoomService roomService)
+        public TeacherController(ITeacherService teacherService)
         {
-            _roomService = roomService;
+            _teacherService = teacherService;
         }
 
-        // GET: Room/Details/5
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var dto = _teacherService.Get();
+            return View(dto);
+        }
+
+        // GET: Teacher/Details/5
         public IActionResult Details(int id)
         {
-            var roomDto = _roomService.Find(id);
-            if (roomDto == null)
+            var teacherDto = _teacherService.Find(id);
+            if (teacherDto == null)
             {
                 return NotFound();
             }
 
-            return View(roomDto);
+            return View(teacherDto);
         }
 
-        // GET: Room/Create
+        // GET: Teacher/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Room/Create
+        // POST: Teacher/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("RoomId,RoomNumberd,Adress,Capacity,Type")] RoomDto roomDto)
+        public IActionResult Create([Bind("TeacherId,Name,Position")] TeacherDto teacherDto)
         {
             if (ModelState.IsValid)
             {
-                _roomService.Create(roomDto);
+                _teacherService.Create(teacherDto);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(roomDto);
+            return View(teacherDto);
         }
 
-        // GET: Room/Edit/5
+        // GET: Teacher/Edit/5
         public IActionResult Edit(int id)
         {
-            var roomDto = _roomService.Find(id);
-            if (roomDto == null)
+            var teacherDto = _teacherService.Find(id);
+            if (teacherDto == null)
             {
                 return NotFound();
             }
-            return View(roomDto);
+
+            return View(teacherDto);
         }
 
-        // POST: Room/Edit/5
+        // POST: Teacher/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("RoomId,RoomNumberd,Adress,Capacity,Type")] RoomDto roomDto)
+        public IActionResult Edit(int id, [Bind("TeacherId,Name,Position")] TeacherDto teacherDto)
         {
-            if (id != roomDto.RoomId)
+            if (id != teacherDto.TeacherId)
             {
                 return NotFound();
             }
@@ -75,11 +93,11 @@ namespace Scheduler.Controllers
             {
                 try
                 {
-                    _roomService.Update(roomDto);
+                    _teacherService.Update(teacherDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_roomService.Any(roomDto.RoomId))
+                    if (!_teacherService.Any(teacherDto.TeacherId))
                     {
                         return NotFound();
                     }
@@ -90,32 +108,34 @@ namespace Scheduler.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(roomDto);
+            return View(teacherDto);
         }
 
-        // GET: Room/Delete/5
+        // GET: Teacher/Delete/5
         public IActionResult Delete(int id)
         {
-            var roomDto = _roomService.Find(id);
-            if (roomDto == null)
+
+            var teacherDto = _teacherService.Find(id);
+            if (teacherDto == null)
             {
                 return NotFound();
             }
 
-            return View(roomDto);
+            return View(teacherDto);
         }
 
-        // POST: Room/Delete/5
+        // POST: Teacher/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            if (!_roomService.Any(id))
+            if (!_teacherService.Any(id))
             {
                 return NotFound();
             }
 
-            _roomService.Delete(id);
+            _teacherService.Delete(id);
+
             return RedirectToAction(nameof(Index));
         }
     }

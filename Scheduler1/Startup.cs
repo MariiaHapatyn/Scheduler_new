@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +13,9 @@ using Scheduler.DataAccess.Interfaces;
 using Scheduler.DataAccess.Models;
 using Scheduler.Services.Implementation;
 using Scheduler.Services.Interfaces;
+using System;
 
-namespace Scheduler
+namespace Scheduler1
 {
     public class Startup
     {
@@ -31,7 +28,7 @@ namespace Scheduler
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {     
+        {
             services.AddDbContext<SchedulerContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], sqlServerOptionsAction: sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -40,11 +37,16 @@ namespace Scheduler
                 errorNumbersToAdd: null);
             }));
 
-            services.AddIdentity<User, IdentityRole>(
-                config => config.SignIn.RequireConfirmedEmail = true)
-                .AddEntityFrameworkStores<SchedulerContext>()
-                .AddDefaultTokenProviders();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddDefaultUI(UIFramework.Bootstrap4)
+                .AddEntityFrameworkStores<SchedulerContext>();
             services.AddAutoMapper();
 
             services.AddMvc();
@@ -57,8 +59,7 @@ namespace Scheduler
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<ITeacherService, TeacherService>();
 
-
-            // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +68,7 @@ namespace Scheduler
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -78,6 +80,8 @@ namespace Scheduler
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
