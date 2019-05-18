@@ -1,7 +1,6 @@
 ﻿using Scheduler.DataAccess.Models;
-using System;
+using Scheduler.DataAccess.Models.Enums;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Scheduler.DTO.Models
 {
@@ -11,7 +10,7 @@ namespace Scheduler.DTO.Models
         public int RoomNumberd { get; set; }
         public string Adress { get; set; }
         public int Capacity { get; set; }
-        public string Type { get; set; }
+        public Type Type { get; set; }
 
         public ICollection<Schedule> Schedule { get; set; }
     }

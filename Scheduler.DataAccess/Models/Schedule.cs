@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Scheduler.DataAccess.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scheduler.DataAccess.Models
@@ -11,8 +12,8 @@ namespace Scheduler.DataAccess.Models
         public int RoomId { get; set; }
         public int GroupId { get; set; }
         public int? TeacherId { get; set; }
-        public string Day { get; set; }
-        public short? Lesson { get; set; }
+        public Day Day { get; set; }
+        public Lesson Lesson { get; set; }
 
         public virtual Group Group { get; set; }
         public virtual Room Room { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Scheduler.DataAccess.Models.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,7 @@ namespace Scheduler.DataAccess.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TeacherId { get; set; }
         public string Name { get; set; }
-        public string Position { get; set; }
+        public Position Position { get; set; }
 
         public virtual ICollection<Schedule> Schedule { get; set; }
     }

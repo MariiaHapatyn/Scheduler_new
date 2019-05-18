@@ -24,6 +24,12 @@ namespace Scheduler.Controllers
             _roomService = roomService;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var dto = _roomService.Get();
+            return View(dto);
+        }
         // GET: Room/Details/5
         public IActionResult Details(int id)
         {

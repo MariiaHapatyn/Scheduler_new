@@ -1,4 +1,5 @@
 ﻿using Scheduler.DataAccess.Models;
+using Scheduler.DataAccess.Models.Enums;
 
 namespace Scheduler.DTO.Models
 {
@@ -8,8 +9,8 @@ namespace Scheduler.DTO.Models
         public int RoomId { get; set; }
         public int GroupId { get; set; }
         public int? TeacherId { get; set; }
-        public string Day { get; set; }
-        public short? Lesson { get; set; }
+        public Day Day { get; set; }
+        public Lesson Lesson { get; set; }
 
         public Group Group { get; set; }
         public Room Room { get; set; }

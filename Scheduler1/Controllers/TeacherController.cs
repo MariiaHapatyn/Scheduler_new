@@ -25,7 +25,7 @@ namespace Scheduler.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Index()
         {
             var dto = _teacherService.Get();
             return View(dto);
