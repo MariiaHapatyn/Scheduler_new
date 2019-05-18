@@ -17,17 +17,22 @@ namespace Scheduler.Controllers
     public class ScheduleController : Controller
     {
         private readonly IScheduleService _scheduleService;
-
-        public ScheduleController(IScheduleService scheduleService)
+        private readonly IRoomService _roomService;
+        private readonly IGroupService _groupService;
+        private readonly ITeacherService _teacherService;
+      public ScheduleController(IScheduleService scheduleService, IRoomService roomService, IGroupService groupService, ITeacherService teacherService)
         {
             _scheduleService = scheduleService;
+            _roomService = roomService;
+            _groupService = groupService;
+            _teacherService = teacherService;
         }
 
         // GET: Schedule
         public IActionResult Index()
         {
             var dto = _scheduleService.Get();
-            return View(dto);            
+            return View(dto);
         }
 
         // GET: Schedule/Details/5
@@ -43,6 +48,12 @@ namespace Scheduler.Controllers
         }
         public IActionResult Create()
         {
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString() }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name }).ToList();
+            ViewData["GroupId"] = group;
+            ViewData["RoomId"] = room;
+            ViewData["TeacherId"] = teacher;
             return View();
         }
         
@@ -55,6 +66,12 @@ namespace Scheduler.Controllers
                 _scheduleService.Create(scheduleDto);
                 return RedirectToAction(nameof(Index));
             }
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString(), Selected = true }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name, Selected = true }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name, Selected = true }).ToList();
+            ViewData["GroupId"] = group;
+            ViewData["RoomId"] = room;
+            ViewData["TeacherId"] = teacher;
             return View(scheduleDto);
         }
 

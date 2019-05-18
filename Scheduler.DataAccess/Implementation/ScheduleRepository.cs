@@ -18,7 +18,10 @@ namespace Scheduler.DataAccess.Implementation
 
         public IQueryable<Schedule> GetAll()
         {
-            return _context.Schedule;
+            return _context.Schedule
+                .Include(s => s.Group)
+                .Include(s => s.Room)
+                .Include(s => s.Teacher);
         }
 
         public IQueryable<Schedule> Get(Expression<Func<Schedule, bool>> predicate)
