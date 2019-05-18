@@ -23,22 +23,22 @@
             @Html.DisplayFor(model => model.Lesson)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Group)
+            @Html.DisplayNameFor(model => model.GroupId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Group.GroupId)
+            @Html.DisplayFor(model => model.Group.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Room)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Room.RoomId)
+            @Html.DisplayFor(model => model.Room.RoomNumberd)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Teacher)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Teacher.TeacherId)
+            @Html.DisplayFor(model => model.Teacher.Name)
         </dd>
     </dl>
 </div>

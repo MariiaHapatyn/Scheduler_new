@@ -86,6 +86,9 @@ namespace Scheduler.DataAccess.Implementation
         public Schedule Find(int id)
         {
             return _context.Schedule
+                .Include(s => s.Group)
+                .Include(s => s.Room)
+                .Include(s => s.Teacher)
                 .Where(t => t.ScheduleId == id)
                 .SingleOrDefault();
         }

@@ -8,7 +8,7 @@ namespace Scheduler.DTO.Models
         public int ScheduleId { get; set; }
         public int RoomId { get; set; }
         public int GroupId { get; set; }
-        public int? TeacherId { get; set; }
+        public int TeacherId { get; set; }
         public Day Day { get; set; }
         public Lesson Lesson { get; set; }
 

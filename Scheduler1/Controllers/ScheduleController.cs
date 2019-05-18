@@ -61,14 +61,19 @@ namespace Scheduler.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("ScheduleId,RoomId,GroupId,TeacherId,Day,Lesson")] SchedulerDto scheduleDto)
         {
+            var duplicate = _scheduleService.IsDuplicate(scheduleDto.TeacherId, scheduleDto.Lesson);
+            if (duplicate)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 _scheduleService.Create(scheduleDto);
                 return RedirectToAction(nameof(Index));
             }
-            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString(), Selected = true }).ToList();
-            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name, Selected = true }).ToList();
-            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name, Selected = true }).ToList();
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString() }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name }).ToList();
             ViewData["GroupId"] = group;
             ViewData["RoomId"] = room;
             ViewData["TeacherId"] = teacher;
@@ -84,6 +89,13 @@ namespace Scheduler.Controllers
             {
                 return NotFound();
             }
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString() }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name }).ToList();
+            ViewData["GroupId"] = group;
+            ViewData["RoomId"] = room;
+            ViewData["TeacherId"] = teacher;
+
             return View(schedule);
         }
 
@@ -118,6 +130,12 @@ namespace Scheduler.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString() }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name }).ToList();
+            ViewData["GroupId"] = group;
+            ViewData["RoomId"] = room;
+            ViewData["TeacherId"] = teacher;
             return View(scheduleDto);
         }
 
@@ -129,7 +147,12 @@ namespace Scheduler.Controllers
             {
                 return NotFound();
             }
-
+            var room = _roomService.Get().Select(us => new SelectListItem { Value = us.RoomId.ToString(), Text = us.RoomNumberd.ToString() }).ToList();
+            var teacher = _teacherService.Get().Select(us => new SelectListItem { Value = us.TeacherId.ToString(), Text = us.Name }).ToList();
+            var group = _groupService.Get().Select(us => new SelectListItem { Value = us.GroupId.ToString(), Text = us.Name }).ToList();
+            ViewData["GroupId"] = group;
+            ViewData["RoomId"] = room;
+            ViewData["TeacherId"] = teacher;
             return View(scheduleDto);
         }
 

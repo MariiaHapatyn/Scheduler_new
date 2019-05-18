@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Scheduler.DataAccess.Interfaces;
 using Scheduler.DataAccess.Models;
+using Scheduler.DataAccess.Models.Enums;
 using Scheduler.DTO.Models;
 using Scheduler.Services.Interfaces;
 using System.Collections.Generic;
@@ -26,6 +27,14 @@ namespace Scheduler.Services.Implementation
                 .Select(schedule => _mapper.Map<SchedulerDto>(schedule))
                 .ToList();
             return scheduleDto;
+        }
+
+        public bool IsDuplicate(int teacherId, Lesson lesson)
+        {
+           // _scheduleRepository.GetAll().FirstOrDefault(s=>s.TeacherId != teacherId && s.Lesson != lesson);
+
+
+            return _scheduleRepository.GetAll().FirstOrDefault(s => s.TeacherId == teacherId && s.Lesson == lesson) != null;
         }
 
         public virtual void Create(SchedulerDto scheduleDto)
