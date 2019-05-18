@@ -13,7 +13,7 @@ namespace Scheduler.DataAccess.Models
         public int RoomNumberd { get; set; }
         public string Adress { get; set; }
         public int Capacity { get; set; }
-        public Type Type { get; set; }
+        public RoomType Type { get; set; }
 
         public virtual ICollection<Schedule> Schedule { get; set; }
     }

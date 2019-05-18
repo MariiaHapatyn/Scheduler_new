@@ -1,4 +1,5 @@
-﻿@model Scheduler.DataAccess.Models.Schedule
+﻿@model Scheduler.DTO.Models.SchedulerDto
+@using Scheduler.DataAccess.Models.Enums;
 
 @{
     ViewData["Title"] = "Edit";
@@ -30,12 +31,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Day" class="control-label"></label>
-                <input asp-for="Day" class="form-control" />
+                <select asp-for="Day" class="form-control" asp-items="Html.GetEnumSelectList<Day>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Day" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Lesson" class="control-label"></label>
-                <input asp-for="Lesson" class="form-control" />
+                <select asp-for="Lesson" class="form-control" asp-items="Html.GetEnumSelectList<Lesson>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Lesson" class="text-danger"></span>
             </div>
             <div class="form-group">

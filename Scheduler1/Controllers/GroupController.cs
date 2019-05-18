@@ -100,7 +100,7 @@ namespace Scheduler.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,NumberOfStudents")] GroupDto groupDto)
+        public IActionResult Edit(int id, [Bind("GroupId,Name,NumberOfStudents")] GroupDto groupDto)
         {
             if (id != groupDto.GroupId)
             {

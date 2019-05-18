@@ -8,91 +8,65 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Scheduler.DataAccess.Implementation;
 using Scheduler.DataAccess.Models;
+using Scheduler.DTO.Models;
+using Scheduler.Services.Interfaces;
 
 namespace Scheduler.Controllers
 {
     [Authorize]
     public class ScheduleController : Controller
     {
-        private readonly SchedulerContext _context;
+        private readonly IScheduleService _scheduleService;
 
-        public ScheduleController(SchedulerContext context)
+        public ScheduleController(IScheduleService scheduleService)
         {
-            _context = context;
+            _scheduleService = scheduleService;
         }
 
         // GET: Schedule
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var schedulerContext = _context.Schedule.Include(s => s.Group).Include(s => s.Room).Include(s => s.Teacher);
-            return View(await schedulerContext.ToListAsync());
+            var dto = _scheduleService.Get();
+            return View(dto);            
         }
 
         // GET: Schedule/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
+            var scheduleDto = _scheduleService.Find(id);
+            if (scheduleDto == null)
             {
                 return NotFound();
             }
 
-            var schedule = await _context.Schedule
-                .Include(s => s.Group)
-                .Include(s => s.Room)
-                .Include(s => s.Teacher)
-                .FirstOrDefaultAsync(m => m.ScheduleId == id);
-            if (schedule == null)
-            {
-                return NotFound();
-            }
-
-            return View(schedule);
+            return View(scheduleDto);
         }
-
-        // GET: Schedule/Create
         public IActionResult Create()
         {
-            ViewData["GroupId"] = new SelectList(_context.Group, "GroupId", "GroupId");
-            ViewData["RoomId"] = new SelectList(_context.Room, "RoomId", "RoomId");
-            ViewData["TeacherId"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId");
             return View();
         }
-
-        // POST: Schedule/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ScheduleId,RoomId,GroupId,TeacherId,Day,Lesson")] Schedule schedule)
+        public IActionResult Create([Bind("ScheduleId,RoomId,GroupId,TeacherId,Day,Lesson")] SchedulerDto scheduleDto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(schedule);
-                await _context.SaveChangesAsync();
+                _scheduleService.Create(scheduleDto);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Group, "GroupId", "GroupId", schedule.GroupId);
-            ViewData["RoomId"] = new SelectList(_context.Room, "RoomId", "RoomId", schedule.RoomId);
-            ViewData["TeacherId"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId", schedule.TeacherId);
-            return View(schedule);
+            return View(scheduleDto);
         }
 
         // GET: Schedule/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var schedule = await _context.Schedule.FindAsync(id);
+            
+            var schedule =  _scheduleService.Find(id);
             if (schedule == null)
             {
                 return NotFound();
             }
-            ViewData["GroupId"] = new SelectList(_context.Group, "GroupId", "GroupId", schedule.GroupId);
-            ViewData["RoomId"] = new SelectList(_context.Room, "RoomId", "RoomId", schedule.RoomId);
-            ViewData["TeacherId"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId", schedule.TeacherId);
             return View(schedule);
         }
 
@@ -101,9 +75,9 @@ namespace Scheduler.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ScheduleId,RoomId,GroupId,TeacherId,Day,Lesson")] Schedule schedule)
+        public IActionResult Edit(int id, [Bind("ScheduleId,RoomId,GroupId,TeacherId,Day,Lesson")] SchedulerDto scheduleDto)
         {
-            if (id != schedule.ScheduleId)
+            if (id != scheduleDto.ScheduleId)
             {
                 return NotFound();
             }
@@ -112,12 +86,11 @@ namespace Scheduler.Controllers
             {
                 try
                 {
-                    _context.Update(schedule);
-                    await _context.SaveChangesAsync();
+                    _scheduleService.Update(scheduleDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ScheduleExists(schedule.ScheduleId))
+                    if (!_scheduleService.Any(scheduleDto.ScheduleId))
                     {
                         return NotFound();
                     }
@@ -128,47 +101,34 @@ namespace Scheduler.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Group, "GroupId", "GroupId", schedule.GroupId);
-            ViewData["RoomId"] = new SelectList(_context.Room, "RoomId", "RoomId", schedule.RoomId);
-            ViewData["TeacherId"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId", schedule.TeacherId);
-            return View(schedule);
+            return View(scheduleDto);
         }
 
         // GET: Schedule/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            var scheduleDto =  _scheduleService.Find(id);
+            if (scheduleDto == null)
             {
                 return NotFound();
             }
 
-            var schedule = await _context.Schedule
-                .Include(s => s.Group)
-                .Include(s => s.Room)
-                .Include(s => s.Teacher)
-                .FirstOrDefaultAsync(m => m.ScheduleId == id);
-            if (schedule == null)
-            {
-                return NotFound();
-            }
-
-            return View(schedule);
+            return View(scheduleDto);
         }
 
         // POST: Schedule/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            var schedule = await _context.Schedule.FindAsync(id);
-            _context.Schedule.Remove(schedule);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            if (!_scheduleService.Any(id))
+            {
+                return NotFound();
+            }
 
-        private bool ScheduleExists(int id)
-        {
-            return _context.Schedule.Any(e => e.ScheduleId == id);
+            _scheduleService.Delete(id);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

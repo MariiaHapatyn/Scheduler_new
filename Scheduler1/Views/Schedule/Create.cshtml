@@ -1,4 +1,5 @@
-﻿@model Scheduler.DataAccess.Models.Schedule
+﻿@model Scheduler.DTO.Models.SchedulerDto
+@using Scheduler.DataAccess.Models.Enums;
 
 @{
     ViewData["Title"] = "Create";
@@ -14,24 +15,28 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="RoomId" class="control-label"></label>
-                <select asp-for="RoomId" class ="form-control" asp-items="ViewBag.RoomId"></select>
+                <select asp-for="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.GroupId"></select>
+                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="TeacherId" class="control-label"></label>
-                <select asp-for="TeacherId" class ="form-control" asp-items="ViewBag.TeacherId"></select>
+                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Day" class="control-label"></label>
-                <input asp-for="Day" class="form-control" />
+                <select asp-for="Day" class="form-control" asp-items="Html.GetEnumSelectList<Day>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Day" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Lesson" class="control-label"></label>
-                <input asp-for="Lesson" class="form-control" />
+                <select asp-for="Lesson" class="form-control" asp-items="Html.GetEnumSelectList<Lesson>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Lesson" class="text-danger"></span>
             </div>
             <div class="form-group">
